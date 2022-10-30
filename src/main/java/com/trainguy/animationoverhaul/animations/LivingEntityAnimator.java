@@ -1,6 +1,5 @@
 package com.trainguy.animationoverhaul.animations;
 
-import com.trainguy.animationoverhaul.AnimationOverhaul;
 import com.trainguy.animationoverhaul.access.EntityAccess;
 import com.trainguy.animationoverhaul.access.LivingEntityAccess;
 import com.trainguy.animationoverhaul.util.animation.Locator;
@@ -8,18 +7,16 @@ import com.trainguy.animationoverhaul.util.animation.LocatorRig;
 import com.trainguy.animationoverhaul.util.data.AnimationData;
 import com.trainguy.animationoverhaul.util.time.Easing;
 import com.trainguy.animationoverhaul.util.time.TimerProcessor;
-import net.minecraft.CrashReport;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.animal.FlyingAnimal;
 
 import java.util.List;
-import java.util.Random;
 
 public class LivingEntityAnimator<T extends LivingEntity, M extends EntityModel<T>> extends AbstractEntityAnimator<T, M> {
 
@@ -33,7 +30,7 @@ public class LivingEntityAnimator<T extends LivingEntity, M extends EntityModel<
     protected float headXRot;
     protected float headYRot;
 
-    protected Random random;
+    protected RandomSource random;
 
     protected static final String DELTA_Y = "delta_y";
     protected static final String DELTA_Y_OLD = "delta_y_old";

@@ -14,9 +14,8 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.Collection;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -33,9 +32,7 @@ public class AnimationDataLoader implements SimpleResourceReloadListener<Map<Res
         return CompletableFuture.supplyAsync(() -> {
             Gson gson = new Gson();
 
-            Collection<ResourceLocation> passedFiles = manager.listResources("animations", (string) -> {
-                return string.endsWith(".json");
-            });
+            Map<ResourceLocation, Resource> passedFiles = manager.listResources("animations", (path) -> path.getPath().endsWith(".json"));
 
             //String entity = "bee";
             //EntityType<?> entityType = EntityType.byString(entity).isPresent() ? EntityType.byString(entity).get() : null;
@@ -45,52 +42,16 @@ public class AnimationDataLoader implements SimpleResourceReloadListener<Map<Res
 
             //Iterate over each found resource location and put its JSON element into a map
             Map<ResourceLocation, JsonElement> map = Maps.newHashMap();
-            for(ResourceLocation resourceLocation : passedFiles){
-                String resourceLocationPath = resourceLocation.getPath();
-                try {
-                    Resource resource = manager.getResource(resourceLocation);
-                    try {
-                        InputStream inputStream = resource.getInputStream();
-                        try {
-                            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-                            try {
-                                JsonElement jsonElement = (JsonElement) GsonHelper.fromJson(gson, (Reader)reader, JsonElement.class);
-                                if (jsonElement != null) {
-                                    map.put(resourceLocation, jsonElement);
-                                } else {
-                                    AnimationOverhaul.LOGGER.error("Couldn't load data file {} as it's null or empty", resourceLocation);
-                                }
-                            } catch (Throwable bufferedReaderThrowable) {
-                                try {
-                                    reader.close();
-                                } catch (Throwable var16) {
-                                    bufferedReaderThrowable.addSuppressed(var16);
-                                }
-                                throw bufferedReaderThrowable;
-                            }
-                            reader.close();
-                        } catch (Throwable inputStreamThrowable) {
-                            if (inputStream != null) {
-                                try {
-                                    inputStream.close();
-                                } catch (Throwable closeInputStreamThrowable) {
-                                    inputStreamThrowable.addSuppressed(closeInputStreamThrowable);
-                                }
-                            }
-                            throw inputStreamThrowable;
-                        }
-                        inputStream.close();
-                    } catch (Throwable resourceThrowable) {
-                        if (resource != null) {
-                            try {
-                                resource.close();
-                            } catch (Throwable closeResourceThrowable) {
-                                resourceThrowable.addSuppressed(closeResourceThrowable);
-                            }
-                        }
-                        throw resourceThrowable;
+            for(Map.Entry<ResourceLocation, Resource> resource : passedFiles.entrySet()){
+                ResourceLocation resourceLocation = resource.getKey();
+
+                try (BufferedReader reader = resource.getValue().openAsReader()){
+                    JsonElement jsonElement = GsonHelper.fromJson(gson, reader, JsonElement.class);
+                    if (jsonElement != null) {
+                        map.put(resourceLocation, jsonElement);
+                    } else {
+                        AnimationOverhaul.LOGGER.error("Couldn't load data file {} as it's null or empty", resourceLocation);
                     }
-                    resource.close();
                 } catch (IOException e) {
                     AnimationOverhaul.LOGGER.error("Error parsing data upon grabbing resource for resourceLocation " + resourceLocation);
                 }

@@ -5,7 +5,6 @@ import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.trainguy.animationoverhaul.access.LivingEntityAccess;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -36,9 +35,9 @@ public class CommandModifyParameter {
             }
         }
         if(clear){
-            context.getSource().sendSuccess(new Component.literal("Cleared debug parameters for " + targetedEntities.size() + " entities"), true);
+            context.getSource().sendSuccess(Component.literal("Cleared debug parameters for " + targetedEntities.size() + " entities"), true);
         } else {
-            context.getSource().sendSuccess(new Component.literal("Set debug parameter " + parameter.toString().toLowerCase(Locale.ROOT) + " to value " + value + " for " + targetedEntities.size() + " entities"), true);
+            context.getSource().sendSuccess(Component.literal("Set debug parameter " + parameter.toString().toLowerCase(Locale.ROOT) + " to value " + value + " for " + targetedEntities.size() + " entities"), true);
         }
         return 0;
     }
