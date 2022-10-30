@@ -9,7 +9,7 @@ import com.trainguy.animationoverhaul.access.LivingEntityAccess;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 
 import java.util.Collection;
@@ -36,9 +36,9 @@ public class CommandModifyParameter {
             }
         }
         if(clear){
-            context.getSource().sendSuccess(new TextComponent("Cleared debug parameters for " + targetedEntities.size() + " entities"), true);
+            context.getSource().sendSuccess(new Component.literal("Cleared debug parameters for " + targetedEntities.size() + " entities"), true);
         } else {
-            context.getSource().sendSuccess(new TextComponent("Set debug parameter " + parameter.toString().toLowerCase(Locale.ROOT) + " to value " + value + " for " + targetedEntities.size() + " entities"), true);
+            context.getSource().sendSuccess(new Component.literal("Set debug parameter " + parameter.toString().toLowerCase(Locale.ROOT) + " to value " + value + " for " + targetedEntities.size() + " entities"), true);
         }
         return 0;
     }
